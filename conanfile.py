@@ -20,9 +20,9 @@ class BlackholeConan(ConanFile):
     options = {"shared": [True, False]}
     default_options = "shared=False"
     requires = (
-        "Boost.Thread/1.65.1@bincrafters/stable", 
-        "Boost.System/1.65.1@bincrafters/stable",
-        "cmake_findboost_modular/0.1.0@bincrafters/stable"
+        "boost_thread/1.66.0@bincrafters/stable", 
+        "boost_system/1.66.0@bincrafters/stable",
+        "cmake_findboost_modular/1.66.0@bincrafters/stable"
      )
      
     def source(self):
@@ -33,13 +33,15 @@ class BlackholeConan(ConanFile):
         
     def build(self):
         cmake = CMake(self)
-        cmake.configure(build_folder=self.build_subfolder)
+        cmake.configure()
         cmake.build()
-        cmake.install()
 
     def package(self):
+        cmake = CMake(self)
+        cmake.install()
         include_dir = os.path.join(self.source_subfolder, 'include')
-        self.copy(pattern="*.h", dst="include", src=include_dir)
+        self.copy("LICENSE", dst="licenses", src=self.source_subfolder)
+        self.copy("*.h", dst="include", src=include_dir)
         self.copy("*.dll", dst="bin", keep_path=False)
         self.copy("*.so*", dst="lib", keep_path=False)
         self.copy("*.dylib", dst="lib", keep_path=False)
